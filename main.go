@@ -8,9 +8,9 @@ import (
 )
 
 type Todo struct {
-	ID        string `json:"id,omitempty"`
-	Item      string `json:"item,omitempty"`
-	Completed bool   `json:"completed,omitempty"`
+	ID        string `json:"id"`
+	Item      string `json:"item"`
+	Completed bool   `json:"completed"`
 }
 
 var todos = []Todo{
@@ -57,12 +57,27 @@ func getTodo(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, todo)
 }
 
+func toggleTodoStatus(c *gin.Context) {
+	id := c.Param("id")
+
+	todo, err := getTodoById(id)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"})
+	}
+
+	todo.Completed = !todo.Completed
+
+	c.IndentedJSON(http.StatusOK, todo)
+}
+
 func main() {
 	router := gin.Default()
 
 	router.GET("/todos", getTodos)
 	router.POST("/todos", addTodo)
 	router.GET("/todos/:id", getTodo)
+	router.PATCH("/todos/:id", toggleTodoStatus)
 
 	router.Run() // listen and serve on 0.0.0.0:8080
 }
