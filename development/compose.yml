@@ -1,0 +1,25 @@
+volumes:
+  pgdata:
+    driver: local
+
+services:
+  go-todo-db:
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_DATABASE=go-todo-db-local
+      - POSTGRESQL_USERNAME=go-todo-db-user
+      - POSTGRESQL_PASSWORD=go-todo-db-passwd
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    restart: on-failure
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U go-todo-db-user -d go-todo-db-passwd",
+        ]
+      interval: 2s
+      timeout: 2s
+      retries: 50
