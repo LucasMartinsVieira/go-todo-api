@@ -2,9 +2,13 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
+
+	"github.com/LucasMartinsVieira/go-todo-api/internal/config"
+	"github.com/LucasMartinsVieira/go-todo-api/internal/database"
 )
 
 type Todo struct {
@@ -72,6 +76,11 @@ func toggleTodoStatus(c *gin.Context) {
 }
 
 func main() {
+	cfg := config.LoadConfig()
+	pool := database.ConnectDatabase(cfg)
+
+	fmt.Println(pool)
+
 	router := gin.Default()
 
 	router.GET("/todos", getTodos)
