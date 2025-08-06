@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -82,11 +83,13 @@ func main() {
 	fmt.Println(pool)
 
 	router := gin.Default()
+	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
 	router.GET("/todos", getTodos)
 	router.POST("/todos", addTodo)
 	router.GET("/todos/:id", getTodo)
 	router.PATCH("/todos/:id", toggleTodoStatus)
 
-	router.Run() // listen and serve on 0.0.0.0:8080
+	log.Printf("🚀 Server running on %s", addr)
+	router.Run(addr)
 }
