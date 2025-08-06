@@ -10,6 +10,8 @@ import (
 
 	"github.com/LucasMartinsVieira/go-todo-api/internal/config"
 	"github.com/LucasMartinsVieira/go-todo-api/internal/database"
+	db "github.com/LucasMartinsVieira/go-todo-api/internal/database/repository"
+	"github.com/LucasMartinsVieira/go-todo-api/internal/todo"
 )
 
 type Todo struct {
@@ -22,10 +24,6 @@ var todos = []Todo{
 	{ID: "1", Item: "Study Golang", Completed: false},
 	{ID: "2", Item: "Read Book", Completed: false},
 	{ID: "3", Item: "Work", Completed: false},
-}
-
-func getTodos(c *gin.Context) {
-	c.IndentedJSON(http.StatusOK, todos)
 }
 
 func addTodo(c *gin.Context) {
@@ -78,18 +76,24 @@ func toggleTodoStatus(c *gin.Context) {
 
 func main() {
 	cfg := config.LoadConfig()
+
 	pool := database.ConnectDatabase(cfg)
+	queries := db.New(pool)
 
-	fmt.Println(pool)
+	repo := todo.NewRepository(queries)
+	service := todo.NewService(repo)
+	handler := todo.NewHandler(service)
 
-	router := gin.Default()
+	r := gin.Default()
+	handler.RegisterRoutes(r)
 	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
-	router.GET("/todos", getTodos)
-	router.POST("/todos", addTodo)
-	router.GET("/todos/:id", getTodo)
-	router.PATCH("/todos/:id", toggleTodoStatus)
+	// router.GET("/todos", getTodos)
+	r.POST("/todos", addTodo)
+	r.GET("/todos/:id", getTodo)
+	r.PATCH("/todos/:id", toggleTodoStatus)
 
 	log.Printf("🚀 Server running on %s", addr)
-	router.Run(addr)
+	r.Run(addr)
+
 }
