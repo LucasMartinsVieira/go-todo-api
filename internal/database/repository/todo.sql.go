@@ -86,3 +86,23 @@ func (q *Queries) InsertTodo(ctx context.Context, arg InsertTodoParams) (Todo, e
 	)
 	return i, err
 }
+
+const toggleTodoStatus = `-- name: ToggleTodoStatus :one
+UPDATE todos SET status = NOT status
+WHERE id = $1
+RETURNING id, title, description, status, created_at, updated_at
+`
+
+func (q *Queries) ToggleTodoStatus(ctx context.Context, id int32) (Todo, error) {
+	row := q.db.QueryRow(ctx, toggleTodoStatus, id)
+	var i Todo
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Description,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}

@@ -12,6 +12,7 @@ type Service interface {
 	GetTodos(ctx context.Context) ([]db.Todo, error)
 	CreateTodo(ctx context.Context, input CreateTodoSchema) (TodoModel, error)
 	GetTodo(ctx context.Context, id int32) (TodoModel, error)
+	ToggleTodoStatus(ctx context.Context, input ToggleTodoStatusSchema) (TodoModel, error)
 }
 
 type service struct {
@@ -41,5 +42,12 @@ func (s *service) CreateTodo(ctx context.Context, input CreateTodoSchema) (TodoM
 }
 
 func (s *service) GetTodo(ctx context.Context, id int32) (TodoModel, error) {
-	return s.repo.GetTodo(ctx, id)
+	return s.repo.GetTodoById(ctx, id)
+}
+
+func (s *service) ToggleTodoStatus(
+	ctx context.Context,
+	input ToggleTodoStatusSchema,
+) (TodoModel, error) {
+	return s.repo.ToggleTodoStatusById(ctx, input.ID)
 }

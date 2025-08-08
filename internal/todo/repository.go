@@ -10,6 +10,7 @@ type Repository interface {
 	ListTodos(ctx context.Context) ([]db.Todo, error)
 	CreateTodo(ctx context.Context, arg db.InsertTodoParams) (TodoModel, error)
 	GetTodoById(ctx context.Context, id int32) (TodoModel, error)
+	ToggleTodoStatusById(ctx context.Context, id int32) (TodoModel, error)
 }
 
 type repository struct {
@@ -47,6 +48,16 @@ func (r *repository) GetTodoById(ctx context.Context, id int32) (TodoModel, erro
 
 	return mapDBTodo(todo), nil
 
+}
+
+func (r *repository) ToggleTodoStatusById(ctx context.Context, id int32) (TodoModel, error) {
+	todo, err := r.q.ToggleTodoStatus(ctx, id)
+
+	if err != nil {
+		return TodoModel{}, err
+	}
+
+	return mapDBTodo(todo), nil
 }
 
 func mapDBTodo(dbTodo db.Todo) TodoModel {

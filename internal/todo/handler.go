@@ -1,6 +1,7 @@
 package todo
 
 import (
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -19,6 +20,7 @@ func (h *Handler) RegisterRoutes(r *gin.Engine) {
 	r.GET("/todos", h.getTodos)
 	r.POST("/todos", h.createTodo)
 	r.GET("/todo/:id", h.getTodo)
+	r.PATCH("/todo/:id", h.toggleTodoStatus)
 }
 
 func (h *Handler) getTodos(c *gin.Context) {
@@ -54,10 +56,30 @@ func (h *Handler) getTodo(c *gin.Context) {
 
 	id := int32(id64)
 
-	todo, err := h.service.GetTodoById(c.Request.Context(), id)
+	todo, err := h.service.GetTodo(c.Request.Context(), id)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.IndentedJSON(http.StatusOK, todo)
+}
+
+func (h *Handler) toggleTodoStatus(c *gin.Context) {
+	var input ToggleTodoStatusSchema
+
+	if err := c.ShouldBindUri(&input); err != nil {
+		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	todo, err := h.service.ToggleTodoStatus(c.Request.Context(), input)
+
+	fmt.Println("TODO", &todo)
+
+	if err != nil {
+		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 
