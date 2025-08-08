@@ -9,7 +9,7 @@ import (
 type Repository interface {
 	ListTodos(ctx context.Context) ([]db.Todo, error)
 	CreateTodo(ctx context.Context, arg db.InsertTodoParams) (TodoModel, error)
-	// GetTodo(ctx context.Context, id int32) (db.Todo, error)
+	GetTodoById(ctx context.Context, id int32) (TodoModel, error)
 }
 
 type repository struct {
@@ -36,6 +36,17 @@ func (r *repository) CreateTodo(ctx context.Context, todo db.InsertTodoParams) (
 	}
 
 	return mapDBTodo(created), nil
+}
+
+func (r *repository) GetTodoById(ctx context.Context, id int32) (TodoModel, error) {
+	todo, err := r.q.FindTodoById(ctx, id)
+
+	if err != nil {
+		return TodoModel{}, err
+	}
+
+	return mapDBTodo(todo), nil
+
 }
 
 func mapDBTodo(dbTodo db.Todo) TodoModel {

@@ -26,18 +26,6 @@ var todos = []Todo{
 	{ID: "3", Item: "Work", Completed: false},
 }
 
-func addTodo(c *gin.Context) {
-	var newTodo Todo
-
-	if err := c.BindJSON(&newTodo); err != nil {
-		return
-	}
-
-	todos = append(todos, newTodo)
-
-	c.IndentedJSON(http.StatusCreated, newTodo)
-}
-
 func getTodoById(id string) (*Todo, error) {
 	for i, t := range todos {
 		if t.ID == id {
@@ -46,18 +34,6 @@ func getTodoById(id string) (*Todo, error) {
 	}
 
 	return nil, errors.New("todo not found")
-}
-
-func getTodo(c *gin.Context) {
-	id := c.Param("id")
-
-	todo, err := getTodoById(id)
-
-	if err != nil {
-		c.IndentedJSON(http.StatusNotFound, gin.H{"message": "Todo not found"})
-	}
-
-	c.IndentedJSON(http.StatusOK, todo)
 }
 
 func toggleTodoStatus(c *gin.Context) {
@@ -88,7 +64,6 @@ func main() {
 	handler.RegisterRoutes(r)
 	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
-	r.GET("/todos/:id", getTodo)
 	r.PATCH("/todos/:id", toggleTodoStatus)
 
 	log.Printf("🚀 Server running on %s", addr)

@@ -11,6 +11,7 @@ import (
 type Service interface {
 	GetTodos(ctx context.Context) ([]db.Todo, error)
 	CreateTodo(ctx context.Context, input CreateTodoSchema) (TodoModel, error)
+	GetTodo(ctx context.Context, id int32) (TodoModel, error)
 }
 
 type service struct {
@@ -37,4 +38,8 @@ func (s *service) CreateTodo(ctx context.Context, input CreateTodoSchema) (TodoM
 	}
 
 	return s.repo.CreateTodo(ctx, todo)
+}
+
+func (s *service) GetTodo(ctx context.Context, id int32) (TodoModel, error) {
+	return s.repo.GetTodo(ctx, id)
 }

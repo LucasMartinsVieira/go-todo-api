@@ -42,6 +42,25 @@ func (q *Queries) FindAllTodos(ctx context.Context) ([]Todo, error) {
 	return items, nil
 }
 
+const findTodoById = `-- name: FindTodoById :one
+SELECT id, title, description, status, created_at, updated_at FROM todos
+WHERE id = $1
+`
+
+func (q *Queries) FindTodoById(ctx context.Context, id int32) (Todo, error) {
+	row := q.db.QueryRow(ctx, findTodoById, id)
+	var i Todo
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Description,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
 const insertTodo = `-- name: InsertTodo :one
 INSERT INTO todos (title, description, status) 
 VALUES ($1, $2, $3)
