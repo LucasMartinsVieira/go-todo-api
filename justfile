@@ -15,3 +15,6 @@ compose-down:
 
 compose-up:
   docker compose -f development/compose.yml up -d
+
+sqlc-generate:
+  cd internal/database && sqlc generate
