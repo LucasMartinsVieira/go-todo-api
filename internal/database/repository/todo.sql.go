@@ -7,6 +7,8 @@ package database
 
 import (
 	"context"
+
+	"github.com/jackc/pgx/v5/pgtype"
 )
 
 const findAllTodos = `-- name: FindAllTodos :many
@@ -38,4 +40,30 @@ func (q *Queries) FindAllTodos(ctx context.Context) ([]Todo, error) {
 		return nil, err
 	}
 	return items, nil
+}
+
+const insertTodo = `-- name: InsertTodo :one
+INSERT INTO todos (title, description, status) 
+VALUES ($1, $2, $3)
+RETURNING id, title, description, status, created_at, updated_at
+`
+
+type InsertTodoParams struct {
+	Title       string      `json:"title"`
+	Description pgtype.Text `json:"description"`
+	Status      bool        `json:"status"`
+}
+
+func (q *Queries) InsertTodo(ctx context.Context, arg InsertTodoParams) (Todo, error) {
+	row := q.db.QueryRow(ctx, insertTodo, arg.Title, arg.Description, arg.Status)
+	var i Todo
+	err := row.Scan(
+		&i.ID,
+		&i.Title,
+		&i.Description,
+		&i.Status,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }

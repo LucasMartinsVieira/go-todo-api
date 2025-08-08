@@ -88,8 +88,6 @@ func main() {
 	handler.RegisterRoutes(r)
 	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
-	// router.GET("/todos", getTodos)
-	r.POST("/todos", addTodo)
 	r.GET("/todos/:id", getTodo)
 	r.PATCH("/todos/:id", toggleTodoStatus)
 
