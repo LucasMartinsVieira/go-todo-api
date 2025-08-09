@@ -6,6 +6,10 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	swaggerfiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+
+	_ "github.com/LucasMartinsVieira/go-todo-api/docs"
 )
 
 type Handler struct {
@@ -17,12 +21,23 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r *gin.Engine) {
+	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+
 	r.GET("/todos", h.getTodos)
 	r.POST("/todos", h.createTodo)
 	r.GET("/todo/:id", h.getTodo)
 	r.PATCH("/todo/:id", h.toggleTodoStatus)
 }
 
+// getTodos godoc
+// @Summary      List all todos
+// @Description  Retrieve all todos from the database
+// @Tags         todos
+// @Accept       json
+// @Produce      json
+// @Success      200  {array}   TodoModel
+// @Failure      404  {object}  map[string]string
+// @Router       /todos [get]
 func (h *Handler) getTodos(c *gin.Context) {
 	todos, err := h.service.GetTodos(c.Request.Context())
 

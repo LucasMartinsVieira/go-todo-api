@@ -1,5 +1,11 @@
-@default:
-  @just --list
+default: run-with-docs
+
+run:
+  go run cmd/main.go
+
+run-with-docs:
+  swag init --dir ./cmd,./internal -g main.go -o ./docs
+  go run cmd/main.go
 
 create-migration:
   migrate create -ext=sql -dir=internal/database/migrations -seq init
