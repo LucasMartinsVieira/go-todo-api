@@ -7,6 +7,16 @@ run-with-docs:
   swag init --dir ./cmd,./internal -g main.go -o ./docs
   go run cmd/main.go
 
+build:
+  go build -o go-todo-api ./cmd/main.go
+
+docs:
+  swag init --dir ./cmd,./internal -g main.go -o ./docs
+
+clean:
+  rm -rf go-todo-api
+  rm -rf ./docs
+
 create-migration:
   migrate create -ext=sql -dir=internal/database/migrations -seq init
 
