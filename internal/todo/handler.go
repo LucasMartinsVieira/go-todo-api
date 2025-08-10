@@ -9,7 +9,7 @@ import (
 	swaggerfiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 
-	_ "github.com/LucasMartinsVieira/go-todo-api/docs"
+	docs "github.com/LucasMartinsVieira/go-todo-api/docs"
 )
 
 type Handler struct {
@@ -22,6 +22,9 @@ func NewHandler(service Service) *Handler {
 
 func (h *Handler) RegisterRoutes(r *gin.Engine) {
 	r.GET("/docs/*any", ginSwagger.WrapHandler(swaggerfiles.Handler))
+	docs.SwaggerInfo.Title = "Gin Todo App"
+	docs.SwaggerInfo.Description = "A simple gin todo application"
+	docs.SwaggerInfo.Version = "1.0"
 
 	r.GET("/todos", h.getTodos)
 	r.POST("/todos", h.createTodo)
@@ -32,7 +35,7 @@ func (h *Handler) RegisterRoutes(r *gin.Engine) {
 // getTodos godoc
 // @Summary      List all todos
 // @Description  Retrieve all todos from the database
-// @Tags         todos
+// @Tags         Todos
 // @Accept       json
 // @Produce      json
 // @Success      200  {array}   TodoModel
@@ -49,6 +52,15 @@ func (h *Handler) getTodos(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, todos)
 }
 
+// createTodo godoc
+// @Summary 			Create a new todo
+// @Description 	Create a new todo in the database
+// @Tags 					Todos
+// @Accept 				json
+// @Produce 			json
+// @Success 			200 {object} CreateTodoSchema
+// @Failure       404  {object}  map[string]string
+// @Router       /todos [post]
 func (h *Handler) createTodo(c *gin.Context) {
 	var input CreateTodoSchema
 
@@ -66,6 +78,17 @@ func (h *Handler) createTodo(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, todo)
 }
 
+// getTodo godoc
+// @Summary      Get a todo by ID
+// @Description  Retrieve a specific todo from the database by its ID
+// @Tags         Todos
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Todo ID"
+// @Success      200  {object}  TodoModel
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /todos/{id} [get]
 func (h *Handler) getTodo(c *gin.Context) {
 	id64, _ := strconv.ParseInt(c.Param("id"), 10, 32)
 
@@ -81,6 +104,17 @@ func (h *Handler) getTodo(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, todo)
 }
 
+// toggleTodoStatus godoc
+// @Summary      Toggle todo status
+// @Description  Toggle the completion status of a todo by its ID
+// @Tags         Todos
+// @Accept       json
+// @Produce      json
+// @Param        id   path      int  true  "Todo ID"
+// @Success      200  {object}  TodoModel
+// @Failure      400  {object}  map[string]string
+// @Failure      404  {object}  map[string]string
+// @Router       /todo/{id} [patch]
 func (h *Handler) toggleTodoStatus(c *gin.Context) {
 	var input ToggleTodoStatusSchema
 

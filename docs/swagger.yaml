@@ -1,4 +1,13 @@
 definitions:
+  todo.CreateTodoSchema:
+    properties:
+      description:
+        type: string
+      status:
+        type: boolean
+      title:
+        type: string
+    type: object
   todo.TodoModel:
     properties:
       description:
@@ -13,6 +22,39 @@ definitions:
 info:
   contact: {}
 paths:
+  /todo/{id}:
+    patch:
+      consumes:
+      - application/json
+      description: Toggle the completion status of a todo by its ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todo.TodoModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Toggle todo status
+      tags:
+      - Todos
   /todos:
     get:
       consumes:
@@ -35,5 +77,58 @@ paths:
             type: object
       summary: List all todos
       tags:
-      - todos
+      - Todos
+    post:
+      consumes:
+      - application/json
+      description: Create a new todo in the database
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todo.CreateTodoSchema'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new todo
+      tags:
+      - Todos
+  /todos/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a specific todo from the database by its ID
+      parameters:
+      - description: Todo ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/todo.TodoModel'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get a todo by ID
+      tags:
+      - Todos
 swagger: "2.0"
