@@ -16,7 +16,7 @@ migrate-up:
 migrate-down:
   migrate -path=internal/database/migrations -database "postgresql://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}?sslmode=disable" -verbose down
 
-compose-down:
+compose-stop:
   docker compose -f development/compose.yml stop
 
 compose-up:
