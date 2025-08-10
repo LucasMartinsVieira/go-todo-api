@@ -14,6 +14,7 @@ type Config struct {
 	DBPort     string
 	DBName     string
 	ServerPort string
+	APP_ENV    string
 }
 
 func LoadConfig() Config {
@@ -26,6 +27,7 @@ func LoadConfig() Config {
 		DBPort:     getEnv("DB_PORT", "5432"),
 		DBName:     getEnv("DB_NAME", "todos_db"),
 		ServerPort: getEnv("SERVER_PORT", "8080"),
+		APP_ENV:    getEnv("APP_ENV", "dev"),
 	}
 
 	return cfg

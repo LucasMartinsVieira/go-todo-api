@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -15,6 +15,14 @@ import (
 func main() {
 	cfg := config.LoadConfig()
 
+	env := os.Getenv("APP_ENV")
+
+	if env == "" {
+		env = "dev"
+	}
+
+	config.InitLogger(env)
+
 	pool := database.ConnectDatabase(cfg)
 	queries := db.New(pool)
 
@@ -26,7 +34,6 @@ func main() {
 	handler.RegisterRoutes(r)
 	addr := fmt.Sprintf(":%s", cfg.ServerPort)
 
-	log.Printf("🚀 Server running on %s", addr)
+	config.Logger.Info().Str("addr", addr).Msg("🚀 Server running")
 	r.Run(addr)
-
 }

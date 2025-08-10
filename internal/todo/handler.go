@@ -10,6 +10,7 @@ import (
 	ginSwagger "github.com/swaggo/gin-swagger"
 
 	docs "github.com/LucasMartinsVieira/go-todo-api/docs"
+	"github.com/LucasMartinsVieira/go-todo-api/internal/config"
 )
 
 type Handler struct {
@@ -46,6 +47,7 @@ func (h *Handler) getTodos(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error:": err.Error()})
+		config.Logger.Error().Err(err).Msg("Failed to fetch todos")
 		return
 	}
 
@@ -73,6 +75,7 @@ func (h *Handler) createTodo(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		config.Logger.Error().Err(err).Msg("Failed to create todo")
 		return
 	}
 	c.IndentedJSON(http.StatusCreated, todo)
@@ -98,6 +101,7 @@ func (h *Handler) getTodo(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		config.Logger.Error().Err(err).Msg("Failed to fetch todo")
 		return
 	}
 
@@ -120,6 +124,7 @@ func (h *Handler) toggleTodoStatus(c *gin.Context) {
 
 	if err := c.ShouldBindUri(&input); err != nil {
 		c.IndentedJSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		config.Logger.Error().Err(err).Msg("Failed to bind uri")
 		return
 	}
 
@@ -129,6 +134,7 @@ func (h *Handler) toggleTodoStatus(c *gin.Context) {
 
 	if err != nil {
 		c.IndentedJSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		config.Logger.Error().Err(err).Msg("Failed to toggle todo status")
 		return
 	}
 
