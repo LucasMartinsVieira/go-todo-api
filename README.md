@@ -1,6 +1,6 @@
 # Go Todo API
 
-A **RESTful Todo API** built with **Golang**, following Clean Architecture principles, using **PostgreSQL** with `sqlc` for type-safe queries, and **Zerolog** for structured logging.
+A clean architecture REST API built with **Golang**, **Gin**, **PostgreSQL**, and **sqlc**, following best practices for maintainability and scalability. 
 
 ## Features
 - **Clean Architecture** separation (handlers, services, repositories)
