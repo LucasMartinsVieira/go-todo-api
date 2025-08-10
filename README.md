@@ -57,7 +57,7 @@ After the API is running, you can use the Swagger UI to interact with the endpoi
 
 ## Justfile commands
 
-The project includes a `Makefile` to help you manage common tasks more easily. Here's a list of some available commands and a brief description of what they do:
+The project includes a `justfile` to help you manage common tasks more easily. Here's a list of some available commands and a brief description of what they do:
 
 - `just run`: Run the application without generating API documentation.
 - `just run-with-docs`: Generate the API documentation using Swag, then run the application.
